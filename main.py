@@ -1,9 +1,20 @@
 import sqlite3
 
-# Define DBOperation class to manage all data into the database.
-# Give a name of your choice to the database
 
-class DBOperations:
+# There are two types of approach for using sql and python.
+"""
+1. Creating SQL Queries in a .sql file to separate queries from functions and other processes to avoid complexity and chaos
+  - This might be good choice when we plan to improve our code frequently and  make changes. When we are dealing with big projects
+  flexibility is one of our top priorities. We do not want to be choked in a complicated code environment that sql queries and python functions 
+  start battle against each other.
+
+2. Using SQL Queries in the same file which is .py file with other function and processes.
+  - This might be a good choice when our programm is not that deep and have basic functionality such as addidng,searching, updating and
+  deleting. When complexity is not our first thread we can use queries under same file.
+"""
+# Defining DatabaseOperations class to manage all data into the database.
+class DatabaseOperations:
+    # THESE BASİC OPERATİONS FOR CRUD(Create,Read,Update and Delete) Functions
     sql_create_table_firsttime = "CREATE TABLE IF NOT EXISTS FlightInfo (FlightID INTEGER PRIMARY KEY, FlightOrigin TEXT, FlightDestination TEXT, Status TEXT)"
     
     sql_create_table = "CREATE TABLE FlightInfo (FlightID INTEGER PRIMARY KEY, FlightOrigin TEXT, FlightDestination TEXT, Status TEXT)"
@@ -14,6 +25,9 @@ class DBOperations:
     sql_update_data = "UPDATE FlightInfo SET FlightOrigin = ?, FlightDestination = ?, Status = ? WHERE FlightID = ?"
     sql_delete_data = "DELETE FROM FlightInfo WHERE FlightID = ?"
     sql_drop_table = "DROP TABLE IF EXISTS FlightInfo"
+
+# This init function is special for python. We can see it as a constructor in c++. It services for same mission. But we use init function
+#  here for database creating and connecting
 
     def __init__(self):
         try:
@@ -30,7 +44,7 @@ class DBOperations:
         self.conn = sqlite3.connect("FlightDatabase.db")
         self.cur = self.conn.cursor()
 
-    def create_table(self):
+    def create_table(self):   # Creating table for data
         try:
             self.get_connection()
             self.cur.execute(self.sql_create_table)
@@ -41,7 +55,7 @@ class DBOperations:
         finally:
             self.conn.close()
 
-    def insert_data(self):
+    def insert_data(self):   #Adding new data to database.
         try:
             self.get_connection()
             
@@ -104,7 +118,7 @@ class DBOperations:
         finally:
             self.conn.close()
 
-    def update_data(self):
+    def update_data(self):   # When we want changes in our current flights
         try:
             self.get_connection()
             
@@ -126,7 +140,7 @@ class DBOperations:
         finally:
             self.conn.close()
 
-    def delete_data(self):
+    def delete_data(self):     # Delete Function for Flightdata
         try:
             self.get_connection()
             
@@ -144,7 +158,7 @@ class DBOperations:
         finally:
             self.conn.close()
 
-
+#Finally FlightInfo Class for Flightdata. This class is held for defining special flight data for each flights
 class FlightInfo:
 
     def __init__(self):
@@ -153,18 +167,18 @@ class FlightInfo:
         self.flightDestination = ''
         self.status = ''
 
-    def set_flight_id(self, flightID):
+    def set_flight_id(self, flightID): # Set Flight ID (Unique Number for each flight to separate one from others)
         self.flightID = flightID
 
-    def set_flight_origin(self, flightOrigin):
+    def set_flight_origin(self, flightOrigin):  # Set Flight Origin(From Where?)
         self.flightOrigin = flightOrigin
 
-    def set_flight_destination(self, flightDestination):
+    def set_flight_destination(self, flightDestination):  #Set Flight Destination(To)
         self.flightDestination = flightDestination
 
-    def set_status(self, status):
+    def set_status(self, status):              #Set Flight Status(On Time,Departed,Delayed)
         self.status = status
-
+  # GET Functions are used for gettin data from users and appoint to a class variable for using for different purposes.
     def get_flight_id(self):
         return self.flightID
 
@@ -182,8 +196,8 @@ class FlightInfo:
 
 
 # The main function will parse arguments.
-# These argument will be definded by the users on the console.
-# The user will select a choice from the menu to interact with the database.
+# These argument will be defined by the users on the console.
+
 
 if __name__ == "__main__":
     while True:
@@ -196,9 +210,9 @@ if __name__ == "__main__":
         print(" 5. Update data some records")
         print(" 6. Delete data some records")
         print(" 7. Exit\n")
-
-        __choose_menu = int(input("Enter your choice: "))
-        db_ops = DBOperations()
+# The user will select a choice from the menu to interact with the database.
+        __choose_menu = int(input("Enter your choice(Only Number for Process You Want): "))
+        db_ops = DatabaseOperations()
         if __choose_menu == 1:
             db_ops.create_table()
         elif __choose_menu == 2:
